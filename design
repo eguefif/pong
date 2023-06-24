@@ -1,4 +1,5 @@
 Design
+1.
 The player class will use polymorphism to update its racket class.
 Depending on what kind of player, it will init a IO class specific
 to its nature. IO with socket for remote. IO with keyboard for local
@@ -7,11 +8,45 @@ For online playing, one player will set up a server that will be in
 charge to accept player and transmit the ball position to the other player.
 The client player will have another thread to manage IO for the ball.
 
+2.
+Class app will handle a menu:
+- One vs Computer
+- One Vs One local
+- One Vs One remote
+----> Join a server with IP address
+----> Create a server.
+
+If player create a server, a thread with a server class is run. The server will
+be responsible for both player and the ball coordinate calculation.
+At the end of this process, the app create a Game using polymorphism.
+Game can be of 3 types:
+- Against computer
+- Local battle
+- Remote battle
+
+How the game class works:
+Event function
+This event function will update a queue with new action in case of local games.
+It will send this information to the server if it's an online game.
+
+Physics
+Then, the main loop pulled information from the queue in order to update coordinate and game status.
+It will also get coordinate for the ball and both player in case of an online game.
+The rendering render on screen.
+
+Rendering
+It will render the list of objects build in the last step.
+
+Attribute:
+- Player
+- Ball
+- Renderer
+- IO
+
 IO sub system
-For now, I'll try to have a thread for each player IO. The main thread
-will be in charge of the main loop. The latter will use the player
-iterface to update a vector structure used for rendering.
-A thread will be start for the server.
+It will be started in a thread. It will drain the queue list to send information to the server.
+It will listen to server and update its games information.
+It will provide an interface to update the Game class and add actions to the queue.
 
 Classes list:
 -Game
