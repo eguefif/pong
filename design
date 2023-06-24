@@ -1,0 +1,42 @@
+Design
+The player class will use polymorphism to update its racket class.
+Depending on what kind of player, it will init a IO class specific
+to its nature. IO with socket for remote. IO with keyboard for local
+and IO with AI connection for computer.
+For online playing, one player will set up a server that will be in
+charge to accept player and transmit the ball position to the other player.
+The client player will have another thread to manage IO for the ball.
+
+IO sub system
+For now, I'll try to have a thread for each player IO. The main thread
+will be in charge of the main loop. The latter will use the player
+iterface to update a vector structure used for rendering.
+A thread will be start for the server.
+
+Classes list:
+-Game
+-Renderer
+-IO
+-Moveable (abstract)
+-Racket
+-Ball
+-Player (abstract)
+-Local human
+-Remote human
+-Computer
+
+Game
+Attributes:
+- 2 Players class
+- 1 ball
+- One renderer
+- IO queues
+Functions:
+Public -> onExecute()
+Private -> onInit()
+		-> onEvent()
+		-> onLoop()
+		-> onRender()
+		-> onCleanup()
+
+
