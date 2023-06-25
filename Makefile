@@ -1,8 +1,10 @@
-NAME=Pong
+NAME=pong
 CC=g++
+FLAGS=-w
 INCLUDE=-I./include
+LIB=-lSDL2
 
-_SRC=pong.cpp
+_SRC=pong.cpp main.cpp
 _OBJ=$(_SRC:.cpp=.o)
 SDIR=./src/
 ODIR=./obj/
@@ -12,7 +14,16 @@ OBJ=$(addprefix $(ODIR), $(_OBJ))
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) -o $@ $(SRC)
+	$(CC) $(FLAGS) -o $@ $(OBJ) $(LIB)
 
 $(ODIR)%.o: $(SDIR)%.cpp
 	$(CC) $(INCLUDE) -c $< -o $@
+
+.PHONY: clean re test
+clean:
+	rm -f $(ODIR)*.o $(NAME)
+
+re: clean all
+
+test:
+	./$(NAME)
