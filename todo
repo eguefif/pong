@@ -1,0 +1,3 @@
+Todo:
+	Need to write an abstract class game and 3 child class for local, online and computer.
+	Update the onCreategame from class pong to create a class game depending on the given type.
