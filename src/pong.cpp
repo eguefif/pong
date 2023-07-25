@@ -1,12 +1,5 @@
 #include "pong.h"
 
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
-
-Pong::Pong()
-{}
-
-
 void Pong::onRun()
 {
 	int type = EXIT;
@@ -14,7 +7,7 @@ void Pong::onRun()
 	onInit();
 	while (!quit)
 	{
-		onEvent();
+		//onEvent();
 		type = onMenu();
 		if (type == EXIT)
 			break;
@@ -25,12 +18,16 @@ void Pong::onRun()
 
 int Pong::onMenu()
 {
-	return 1;
+	int type = COMPUTER;
+
+	Menu menu = Menu(window);
+	type = menu.onRun();
+	return type;
 }
 
 void Pong::onCreateGame(int type)
 {
-	game = Game(type, window);
+	Game game = Game(window);
 	game.onRun();
 }
 

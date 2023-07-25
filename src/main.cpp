@@ -2,8 +2,8 @@
 
 int main(void)
 {
-	Pong pong;
+	Pong p;
 
-	pong.onRun();
+	p.onRun();
 	return 0;
 }

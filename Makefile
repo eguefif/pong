@@ -2,21 +2,24 @@ NAME=pong
 CC=g++
 FLAGS=-w
 INCLUDE=-I./include
-LIB=-lSDL2
+LIB=-lSDL2 -lSDL2_image
 
-_SRC=pong.cpp main.cpp
+_SRC=main.cpp pong.cpp game.cpp menu.cpp
 _OBJ=$(_SRC:.cpp=.o)
+_INC=pong.h menu.h
 SDIR=./src/
 ODIR=./obj/
+IDIR=./include/
 SRC=$(addprefix $(SDIR), $(_SRC))
 OBJ=$(addprefix $(ODIR), $(_OBJ))
+INC=$(addprefix $(IDIR), $(_INC))
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
 	$(CC) $(FLAGS) -o $@ $(OBJ) $(LIB)
 
-$(ODIR)%.o: $(SDIR)%.cpp
+$(ODIR)%.o: $(SDIR)%.cpp $(INC)
 	$(CC) $(INCLUDE) -c $< -o $@
 
 .PHONY: clean re test

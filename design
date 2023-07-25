@@ -37,7 +37,7 @@ The rendering render on screen.
 Rendering
 It will render the list of objects build in the last step.
 
-Attribute:
+Attribut:
 - Player
 - Ball
 - Renderer
@@ -75,3 +75,9 @@ Private -> onInit()
 		-> onCleanup()
 
 
+init
+run
+	event => get information from the player or AI
+	update => update position dependig on the new information
+	render => display
+cleanup
