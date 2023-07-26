@@ -3,12 +3,14 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <iostream>
-#include "menu.h"
 #include <cstdlib>
 #include <vector>
+#include "menu.h"
 #include "remote.h"
 #include "computer.h"
 #include "local.h"
+#include "objects.h"
+#include "renderer.h"
 
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 800;
@@ -16,21 +18,6 @@ const int RACKET_SIZE = SCREEN_HEIGHT / 20;
 const int RACKET_WIDTH = 10;
 const int BALL_SIZE = 6;
 
-typedef struct s_coord
-{
-	int x;
-	int y;
-}		t_coord;
-
-class Ball
-{
-	public:
-		Ball(t_coord alocation);
-		void move();
-
-	private:
-		t_coord location;
-};
 
 class Pong
 {

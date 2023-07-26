@@ -1,9 +1,7 @@
 #include "local.h"
 
-Local::Local(SDL_Window *aWindow)
-{
-	window = aWindow;
-}
+Local::Local(SDL_Window *window) : Game(window)
+{}
 
 void Local::onEvent()
 {

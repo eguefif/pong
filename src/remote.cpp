@@ -1,7 +1,6 @@
 #include "local.h"
 
-Remote::Remote(SDL_Window *aWindow) :
-	window(aWindow)
+Remote::Remote(SDL_Window *window) : Game(window)
 {}
 
 void Remote::onEvent()

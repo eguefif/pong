@@ -5,7 +5,7 @@
 class Computer : private Game
 {
 	public:
-		Computer(SDL_Window *aWindow);
+		Computer(SDL_Window *window);
 		using Game::onRun;
 	
 	protected:

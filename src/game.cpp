@@ -1,12 +1,10 @@
 #include "pong.h"
 
-Game::Game()
+Game::Game(SDL_Window *awindow) :
+	window(awindow)
 {
-	t_coord location;
-	location.x = SCREEN_WIDTH / 2;
-	location.y = SCREEN_HEIGHT / 2;
-	Ball aball(location);
-	ball = aball;
+	Renderer arenderer(awindow);
+	renderer = arenderer;
 }
 
 void Game::onRun()
@@ -21,10 +19,12 @@ void Game::onRun()
 
 void Game::onRender() const
 {
+	renderer.render_scene();
 }
 
 void Game::onUpdate()
 {
+	renderer.update_scene(ball);
 }
 
 void Game::onEvent()

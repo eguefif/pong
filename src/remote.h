@@ -5,7 +5,7 @@
 class Remote : private Game
 {
 	public:
-		Remote(SDL_Window *aWindow);
+		Remote(SDL_Window *window);
 		using Game::onRun;
 	
 	protected:

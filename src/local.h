@@ -5,7 +5,7 @@
 class Local : protected Game
 {
 	public:
-		Local(SDL_Window *aWindow);
+		Local(SDL_Window *window);
 		using Game::onRun;
 
 	protected:

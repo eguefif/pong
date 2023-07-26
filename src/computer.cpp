@@ -1,9 +1,7 @@
 #include "local.h"
 
-Computer::Computer(SDL_Window *aWindow)
-{
-	window = aWindow;
-}
+Computer::Computer(SDL_Window *window) : Game(window)
+{}
 
 void Computer::onEvent()
 {
