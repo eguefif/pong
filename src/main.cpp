@@ -1,4 +1,5 @@
 #include "pong.h"
+#include "def.h"
 
 int main(void)
 {

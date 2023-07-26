@@ -1,20 +1,19 @@
 #include "pong.h"
-#include "remote.h"
-#include "computer.h"
-#include "local.h"
 
 void Pong::onRun()
 {
 	int type = EXIT;
+	int retval;
 
 	onInit();
 	while (!quit)
 	{
-		//onEvent();
 		type = onMenu();
 		if (type == EXIT)
 			break;
-		onCreateGame(type);
+		retval = onCreateGame(type);
+		if (retval == EXIT)
+			break;
 	}
 	onCleanup();
 }
@@ -28,23 +27,26 @@ int Pong::onMenu()
 	return type;
 }
 
-void Pong::onCreateGame(int type)
+int Pong::onCreateGame(int type)
 {
+	int retval;
+
 	if (type == LOCAL)
 	{
 		Local game(window);
-		game.onRun();
+		retval = game.onRun();
 	}
 	else if (type == REMOTE)
 	{
 		Remote game(window);
-		game.onRun();
+		retval = game.onRun();
 	}
 	else if (type == COMPUTER)
 	{
 		Computer game(window);
-		game.onRun();
+		retval = game.onRun();
 	}
+	return (retval);
 }
 
 void Pong::onInit()
@@ -64,11 +66,4 @@ void Pong::onCleanup()
 {
 	SDL_DestroyWindow(window);
 	SDL_Quit();
-}
-
-void Pong::onEvent()
-{
-	while (SDL_PollEvent(&event) != 0)
-		if (event.type == SDL_QUIT)
-			quit = true;
 }

@@ -1,4 +1,4 @@
-#include "pong.h"
+#include "menu.h"
 
 Menu::Menu(SDL_Window *aWindow) :
 	window(aWindow)
@@ -29,10 +29,10 @@ void Menu::onInit()
 	else
 	{
 		sScreenSurface = SDL_GetWindowSurface(window);
-		title = load_surface(title_path);
-		selector = load_surface(selector_path);
+		title = load_surface(title_path, sScreenSurface);
+		selector = load_surface(selector_path, sScreenSurface);
 		for (auto path : images_path)
-			images_surface.push_back(load_surface(path));
+			images_surface.push_back(load_surface(path, sScreenSurface));
 	}
 }
 
@@ -53,35 +53,15 @@ void Menu::load_image_path()
 	images_path.push_back(image5);
 }
 
-SDL_Surface *Menu::load_surface(std::string path)
-{
-	SDL_Surface *optimized_surface = NULL;
-
-	SDL_Surface *loaded_surface = IMG_Load(path.c_str());
-	if (loaded_surface == NULL)
-	{
-		std::cerr << "Impossible to load img: " << path.c_str() << std::endl;
-		exit(EXIT_FAILURE);
-	}
-	else
-	{
-		optimized_surface = SDL_ConvertSurface(loaded_surface, sScreenSurface->format, 0);
-		if (optimized_surface == NULL)
-		{
-			std::cerr << "Error while converting image: " << path.c_str() << std::endl;
-			exit(EXIT_FAILURE);
-		}
-		SDL_FreeSurface(loaded_surface);
-	}
-	return (optimized_surface);
-}
-
 void Menu::onEvent()
 {
 	while (SDL_PollEvent(&event) != 0)
 	{
 		if (event.type == SDL_QUIT)
+		{
 			quit = true;
+			selector_position = 3;
+		}
 		else if (event.type == SDL_KEYDOWN)
 		{
 			switch(event.key.keysym.sym)
@@ -90,7 +70,11 @@ void Menu::onEvent()
 							  break;
 				case SDLK_DOWN: move_selector_down();
 								break;
+				case SDLK_SPACE:
 				case SDLK_RETURN: quit = true;
+								  break;
+				case SDLK_ESCAPE: quit = true;
+								  selector_position = 3;
 								  break;
 				default: break;
 			}
