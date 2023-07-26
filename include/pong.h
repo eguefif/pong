@@ -1,12 +1,17 @@
+#pragma once
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <iostream>
 #include "menu.h"
-#ifndef PONG_H
-# define PONG_H
+#include <cstdlib>
+#include <vector>
+#include "remote.h"
+#include "computer.h"
+#include "local.h"
 
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+const int SCREEN_WIDTH = 1280;
+const int SCREEN_HEIGHT = 800;
 const int RACKET_SIZE = SCREEN_HEIGHT / 20;
 const int RACKET_WIDTH = 10;
 const int BALL_SIZE = 6;
@@ -15,47 +20,22 @@ typedef struct s_coord
 {
 	int x;
 	int y;
-}		coord;
+}		t_coord;
 
-class Object
+class Ball
 {
 	public:
-		Object(coord aLocation);
-		virtual void display(SDL_Surface *aSurface);
-		void updateCoord(coord newLocation);
-		coord location;
-};
+		Ball(t_coord alocation);
+		void move();
 
-class Racket : public Object
-{
-	Racket(int side);
-	virtual void display(SDL_Surface *aSurface);
-};
-
-class Ball : public Object
-{
-	Ball(coord location);
-	virtual void display(SDL_Surface *aSurface);
-};
-
-class Game
-{
-	public:
-		Game(SDL_Window *aWindow);
-		void onRun();
-		void onEvent();
-		void onUpdate();
-		void onRender() const;
-	
-		SDL_Window *window = NULL;
-		bool quit = false;
-		SDL_Event event;
+	private:
+		t_coord location;
 };
 
 class Pong
 {
 	public:
-		enum gameType {EXIT=0, COMPUTER=1, LOCAL=2, REMOTE=3};
+		enum gameType {LOCAL=0, REMOTE=1, COMPUTER=2, EXIT=3};
 		enum side {LEFT=0, RIGHT=1};
 		void onRun();
 
@@ -71,5 +51,3 @@ class Pong
 		void onCleanup();
 		void onEvent();
 };
-
-#endif

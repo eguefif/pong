@@ -14,33 +14,88 @@ int Menu::onRun()
 		onRender();
 	}
 	onCleanup();
-	return gameType;
+	return selector_position;
 }
 
 void Menu::onInit()
 {
-	int imgFlags = IMG_INIT_PNG;
-	SDL_Surface *tempSurface = NULL;
-
-	if (!(IMG_Init(imgFlags) & imgFlags))
-		std::cerr << "SDL_image could not initialize! SDL_image error: %s\n", IMG_GetError();
+	int img_flag = IMG_INIT_PNG;
+	load_image_path();
+	if (!(IMG_Init(img_flag) & img_flag))
+	{
+		std::cerr << "Error while initializing img for png" << std::endl;
+		exit(EXIT_FAILURE);
+	}
 	else
 	{
-		gScreenSurface = SDL_GetWindowSurface(window);
-		tempSurface = SDL_LoadBMP("newgame.bmp");
-		gNewGame = SDL_ConvertSurface(tempSurface, gScreenSurface->format, 0);
-		tempSurface = SDL_LoadBMP("exit.bmp");
-		gExit = SDL_ConvertSurface(tempSurface, gScreenSurface->format, 0);
-		SDL_FreeSurface(tempSurface);
-		tempSurface = NULL;
+		sScreenSurface = SDL_GetWindowSurface(window);
+		title = load_surface(title_path);
+		selector = load_surface(selector_path);
+		for (auto path : images_path)
+			images_surface.push_back(load_surface(path));
 	}
+}
+
+void Menu::load_image_path()
+{
+	std::string image3 = "./ressource/pvpr.png";
+	std::string image2 = "./ressource/pvpl.png";
+	std::string image4 = "./ressource/pvc.png";
+	std::string image5 = "./ressource/exit.png";
+	std::string image1 = "./ressource/pong.png";
+	std::string selector = "./ressource/selector.png";
+
+	title_path = image1;
+	selector_path = selector;
+	images_path.push_back(image2);
+	images_path.push_back(image3);
+	images_path.push_back(image4);
+	images_path.push_back(image5);
+}
+
+SDL_Surface *Menu::load_surface(std::string path)
+{
+	SDL_Surface *optimized_surface = NULL;
+
+	SDL_Surface *loaded_surface = IMG_Load(path.c_str());
+	if (loaded_surface == NULL)
+	{
+		std::cerr << "Impossible to load img: " << path.c_str() << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	else
+	{
+		optimized_surface = SDL_ConvertSurface(loaded_surface, sScreenSurface->format, 0);
+		if (optimized_surface == NULL)
+		{
+			std::cerr << "Error while converting image: " << path.c_str() << std::endl;
+			exit(EXIT_FAILURE);
+		}
+		SDL_FreeSurface(loaded_surface);
+	}
+	return (optimized_surface);
 }
 
 void Menu::onEvent()
 {
 	while (SDL_PollEvent(&event) != 0)
+	{
 		if (event.type == SDL_QUIT)
 			quit = true;
+		else if (event.type == SDL_KEYDOWN)
+		{
+			switch(event.key.keysym.sym)
+			{
+				case SDLK_UP: move_selector_up();
+							  break;
+				case SDLK_DOWN: move_selector_down();
+								break;
+				case SDLK_RETURN: quit = true;
+								  break;
+				default: break;
+			}
+		}
+	}
 }
 
 void Menu::onUpdate()
@@ -48,21 +103,74 @@ void Menu::onUpdate()
 
 void Menu::onRender()
 {
-	SDL_Rect finalSurfaceNewgame;
-	finalSurfaceNewgame.x = SCREEN_WIDTH / 2 - SCREEN_WIDTH / 6;
-	finalSurfaceNewgame.y = SCREEN_HEIGHT / 10;
-	finalSurfaceNewgame.w = SCREEN_WIDTH / 3;
-	finalSurfaceNewgame.h = SCREEN_HEIGHT / 3;
-	SDL_BlitScaled(gNewGame, NULL, gScreenSurface, &finalSurfaceNewgame);
-	finalSurfaceNewgame.y = SCREEN_HEIGHT / 10 + 100;
-	SDL_BlitScaled(gExit, NULL, gScreenSurface, &finalSurfaceNewgame);
+	int y;
+	SDL_Rect dst;
+
+	SDL_FillRect(sScreenSurface, NULL, 0x000000);
+	display_title();
+	y = TITLE_DISTANCE;
+	for (auto surface : images_surface)
+	{
+		dst.w = surface->w;
+		dst.h = surface->h;
+		dst.x = SCREEN_WIDTH / 2 - surface->w / 2;
+		dst.y = y;
+		SDL_BlitSurface(surface, NULL, sScreenSurface, &dst);
+		y += dst.h + 10;
+	}
+	display_selector();
 	SDL_UpdateWindowSurface(window);
+}
+
+void Menu::display_title()
+{
+	SDL_Rect dst;
+
+	dst.w = title->w;
+	dst.h = title->h;
+	dst.x = SCREEN_WIDTH / 2 - title->w / 2;
+	dst.y = 5;
+	SDL_BlitSurface(title, NULL, sScreenSurface, &dst);
+
+}
+
+void Menu::display_selector()
+{
+	SDL_Rect dst;
+
+	dst.w = selector->w;
+	dst.h = selector->h;
+	dst.x = SCREEN_WIDTH / 2 - images_surface[selector_position]->w / 2 - selector->w - 10;
+	dst.y = TITLE_DISTANCE + images_surface[1]->h * selector_position + 10 ;
+	SDL_BlitScaled(selector, NULL, sScreenSurface, &dst);
+}
+
+void Menu::move_selector_up()
+{
+	if (selector_position == 0)
+		selector_position = 3;
+	else
+		selector_position -= 1;
+}
+
+void Menu::move_selector_down()
+{
+	if (selector_position == 3)
+		selector_position = 0;
+	else
+		selector_position += 1;
 }
 
 void Menu::onCleanup()
 {
-	SDL_FreeSurface(gNewGame);
-	gNewGame = NULL;
-	SDL_FreeSurface(gExit);
-	gExit = NULL;
+	for (auto image_surface = images_surface.begin();
+			image_surface != images_surface.end();
+			++image_surface)
+	{
+		SDL_FreeSurface(*image_surface);
+		*image_surface = NULL;
+	}
+	images_path.clear();
+	SDL_FreeSurface(sScreenSurface);
+	sScreenSurface = NULL;
 }

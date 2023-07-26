@@ -1,11 +1,12 @@
 #include "pong.h"
 
-Game::Game(SDL_Window *aWindow)
+Game::Game()
 {
-	//Racket racket1(LEFT);
-	//Racket racket2(RIGHT);
-	//Ball ball();
-	window = aWindow;
+	t_coord location;
+	location.x = SCREEN_WIDTH / 2;
+	location.y = SCREEN_HEIGHT / 2;
+	Ball aball(location);
+	ball = aball;
 }
 
 void Game::onRun()

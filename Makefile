@@ -1,10 +1,10 @@
 NAME=pong
 CC=g++
 FLAGS=-w
-INCLUDE=-I./include
-LIB=-lSDL2 -lSDL2_image
+INCLUDE=-I./include -I./src
+LIB=-lSDL2 -lSDL2_image -lSDL2_ttf
 
-_SRC=main.cpp pong.cpp game.cpp menu.cpp
+_SRC=main.cpp pong.cpp game.cpp menu.cpp remote.cpp local.cpp computer.cpp
 _OBJ=$(_SRC:.cpp=.o)
 _INC=pong.h menu.h
 SDIR=./src/

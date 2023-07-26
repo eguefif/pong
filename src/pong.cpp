@@ -1,4 +1,7 @@
 #include "pong.h"
+#include "remote.h"
+#include "computer.h"
+#include "local.h"
 
 void Pong::onRun()
 {
@@ -27,8 +30,21 @@ int Pong::onMenu()
 
 void Pong::onCreateGame(int type)
 {
-	Game game = Game(window);
-	game.onRun();
+	if (type == LOCAL)
+	{
+		Local game(window);
+		game.onRun();
+	}
+	else if (type == REMOTE)
+	{
+		Remote game(window);
+		game.onRun();
+	}
+	else if (type == COMPUTER)
+	{
+		Computer game(window);
+		game.onRun();
+	}
 }
 
 void Pong::onInit()
