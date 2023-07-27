@@ -12,6 +12,8 @@ class Renderer
 		void render_scene(Ball ball, Racket racket1, Racket racket2) const;
 		void render_winner(std::string name) const;
 		void cleanup();
+		void render_text(std::string str, t_coord location);
+		void clear_screen();
 	
 	private:
 		SDL_Renderer *renderer = NULL;

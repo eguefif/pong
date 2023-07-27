@@ -37,7 +37,7 @@ void Game::onUpdate()
 	if (!pause && !winner)
 	{
 		ball.move(racket1, racket2);
-		if (ball.is_score(racket1, racket2))
+		if (ball.is_score())
 		{
 			if (ball.get_scorer() == 0)
 				racket2.update_score();

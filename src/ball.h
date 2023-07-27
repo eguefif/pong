@@ -10,9 +10,10 @@ class Ball
 		void move(Racket racket1, Racket racket2);
 		float get_radius();
 		t_coord get_location();
-		bool is_score(Racket racket1, Racket racket2);
+		bool is_score();
 		int get_scorer();
 		void set_location(t_coord loc);
+		void set_direction(int n);
 
 	private:
 		t_coord location;

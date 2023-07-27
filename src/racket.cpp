@@ -99,3 +99,8 @@ std::string Racket::get_name()
 {
 	return (name);
 }
+
+void Racket::set_name(std::string aname)
+{
+	name = aname;
+}

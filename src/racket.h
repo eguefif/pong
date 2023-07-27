@@ -9,6 +9,7 @@ class Racket
 		bool is_colliding(t_coord loc);
 		int get_side();
 		std::string get_name();
+		void set_name(std::string aname);
 		int get_x();
 		int get_y();
 		void up();

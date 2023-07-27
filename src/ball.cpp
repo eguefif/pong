@@ -55,29 +55,20 @@ void Ball::reverse_y_vec()
 	y_vec = -y_vec;
 }
 
-bool Ball::is_score(Racket racket1, Racket racket2)
+bool Ball::is_score()
 {
 	scorer = -1;
 	if (location.x + radius > SCREEN_WIDTH)
 	{
-		scorer = 1;
+		scorer = RIGHT;
 		return (true);
 	}
 	else if (location.x - radius < 0)
 	{
-		scorer = 0;
-		score_left(racket1, racket2);
+		scorer = LEFT;
 		return (true);
 	}
 	return (false);
-}
-
-void Ball::score_left(Racket racket1, Racket racket2)
-{
-	if (racket1.get_side() == RIGHT)
-		racket1.update_score();
-	else
-		racket2.update_score();
 }
 
 void Ball::score_right(Racket racket1, Racket racket2)
@@ -105,4 +96,23 @@ void Ball::set_location(t_coord loc)
 int Ball::get_scorer()
 {
 	return (scorer);
+}
+
+void Ball::set_direction(int n)
+{
+	switch (n)
+	{
+		case (0): x_vec = BALL_SPEED;
+				  y_vec = BALL_SPEED;
+				  break;
+		case (1): x_vec = -BALL_SPEED;
+				  y_vec = BALL_SPEED;
+				  break;
+		case (2): x_vec = BALL_SPEED;
+				  y_vec = -BALL_SPEED;
+				  break;
+		case (3): x_vec = -BALL_SPEED;
+				  y_vec = -BALL_SPEED;
+				  break;
+	}
 }

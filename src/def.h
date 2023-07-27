@@ -7,6 +7,10 @@
 #include <vector>
 #include <cmath>
 #include <ctime>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <queue>
 
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 800;
@@ -17,6 +21,8 @@ const int RACKET_SPEED = 3;
 const float RADIUS = 25;
 const int BALL_SPEED = 3;
 const float PI = 3.141592;
+const int PORT = 5000;
+const int MAX_SIZE = 99;
 
 typedef struct s_coord
 {
