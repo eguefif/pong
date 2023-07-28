@@ -116,3 +116,28 @@ void Ball::set_direction(int n)
 				  break;
 	}
 }
+
+int Ball::get_direction()
+{
+	int dir;
+
+	if ((x_vec == BALL_SPEED) && (y_vec == BALL_SPEED))
+		dir = 0;
+	else if ((x_vec == -BALL_SPEED) && (y_vec == BALL_SPEED))
+		dir= 1;
+	else if ((x_vec == BALL_SPEED) && (y_vec == -BALL_SPEED))
+		dir = 2;
+	else if ((x_vec == -BALL_SPEED) && (y_vec == -BALL_SPEED))
+		dir= 3;
+	return (dir);
+}
+
+int Ball::get_x()
+{
+	return (location.x);
+}
+
+int Ball::get_y()
+{
+	return (location.y);
+}

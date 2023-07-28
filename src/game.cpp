@@ -5,8 +5,7 @@ Game::Game(SDL_Window *awindow) :
 	racket1(0),
 	racket2(1),
 	renderer(awindow)
-{
-}
+{}
 
 int Game::onRun()
 {

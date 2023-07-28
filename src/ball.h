@@ -14,6 +14,9 @@ class Ball
 		int get_scorer();
 		void set_location(t_coord loc);
 		void set_direction(int n);
+		int get_direction();
+		int get_x();
+		int get_y();
 
 	private:
 		t_coord location;

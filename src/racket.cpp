@@ -104,3 +104,13 @@ void Racket::set_name(std::string aname)
 {
 	name = aname;
 }
+
+void Racket::set_location(int new_y)
+{
+	location.y = new_y;
+}
+
+void Racket::set_score(int sc)
+{
+	score = sc;
+}

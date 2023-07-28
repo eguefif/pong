@@ -10,13 +10,15 @@ class Racket
 		int get_side();
 		std::string get_name();
 		void set_name(std::string aname);
-		int get_x();
-		int get_y();
+		void set_location(int new_y);
 		void up();
 		void down();
 		void move();
 		void update_score();
 		int get_score() const;
+		void set_score(int sc);
+		int get_x();
+		int get_y();
 
 	private:
 		t_coord location;

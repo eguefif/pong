@@ -16,7 +16,6 @@ void TCP_Stream::send_message(Message amessage)
 
 	memset(message, 0, sizeof(message));
 	sprintf(message, "%02d%s", (int) amessage.get_size(), amessage.get_message_tosend());
-	std::cout << "sending" << message << std::endl;
 	sendto(message, strlen(message));
 }
 
@@ -24,18 +23,20 @@ void TCP_Stream::read_message()
 {
 	char temp[MAX_SIZE];
 	int size = 0;
-	int retval = 0;
+	int retval = 1;
 
-	memset(temp, 0, sizeof(temp));
-	retval = receive(temp, 2);
-	if (retval == 2)
+	while (retval > 0)
 	{
-		size = atoi(temp);
 		memset(temp, 0, sizeof(temp));
-		receive(temp, size);
-		Message message(temp);
-		messages.push_back(message);
-		std::cout << "Receiving " << message.get_message() << std::endl;
+		retval = receive(temp, 2);
+		if (retval == 2)
+		{
+			size = atoi(temp);
+			memset(temp, 0, sizeof(temp));
+			receive(temp, size);
+			Message message(temp);
+			messages.push_back(message);
+		}
 	}
 }
 
@@ -60,6 +61,7 @@ size_t TCP_Stream::receive(char *buffer, size_t len)
 
 void TCP_Stream::cleanup()
 {
+	messages.clear();
 	close(sock);
 }
 

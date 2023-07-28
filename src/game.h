@@ -13,7 +13,7 @@ class Game
 		virtual void onEvent() = 0;
 		void onUpdate();
 		void onRender() const;
-		void onCleanup();
+		virtual void onCleanup();
 		void switch_pause();
 		void reset();
 		void set_winner_name();
