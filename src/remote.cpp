@@ -7,6 +7,8 @@ Remote::Remote(SDL_Window *window) : Game(window)
 int Remote::onRun()
 {
 	init_remote_game();
+	if (!stop)
+		while (!conn.waiting_to_start());
 	while (!stop)
 	{
 		onEvent();
@@ -27,111 +29,6 @@ void Remote::init_remote_game()
 	setup_game();
 }
 
-void Remote::setup_game()
-{
-	Message message_name("name", name);
-	SDL_Event ev;
-
-	stream.send_message(message_name);
-
-	while (!stop || is_init_done())
-	{
-		render_waiting_room();
-		stream.read_message();
-		while (SDL_PollEvent(&ev))
-		{
-			if (event.type == SDL_QUIT)
-			{
-				stop = true;
-				quit = true;
-			}
-			if (event.type == SDL_KEYDOWN)
-			{
-				if (event.key.keysym.sym == SDLK_ESCAPE)
-					stop = true;
-				else if (event.key.keysym.sym == SDLK_SPACE && (init_flag & NAME))
-				{
-					init_flag &= READY;
-					Message ready_message("ready");
-					stream.send_message(ready_message);
-				}
-			}
-		}
-		for (auto message = stream.messages.begin(); message != stream.messages.end(); ++message)
-		{
-			if (message->get_command() == "waiting")
-			{
-				racket1.set_name(name);
-				stream.messages.erase(message);
-				break;
-			}
-			else if (message->get_command() == "name")
-			{
-				racket2.set_name(message->get_content());
-				stream.messages.erase(message);
-				init_flag &= NAME;
-				break;
-			}
-			else if(message->get_command() == "ball")
-			{
-				ball.set_direction(atoi(message->get_content().c_str()));
-				init_flag &= BALL;
-			}
-		}
-	}
-}
-
-void Remote::render_waiting_room()
-{
-	renderer.clear_screen();
-	renderer.render_text("Pong remote", {SCREEN_WIDTH / 2 - 5, 50});
-
-	if (!(init_flag & NAME))
-	{
-		std::string waiting_line = "Waiting for another player";
-		renderer.render_text(waiting_line, {SCREEN_WIDTH / 2 -(int) waiting_line.size()/2, 100});
-	}
-	else if((init_flag & NAME) && (
-	{
-		std::string line1 = "The game is full. Push space when ready.";
-		std::string line2 = "Player 1: " + racket1.get_name();
-		std::string line3 = "Player 2: " + racket2.get_name();
-		renderer.render_text(line1, {SCREEN_WIDTH / 2 - (int) line1.size()/2, 100});
-		renderer.render_text(line2, {SCREEN_WIDTH / 2 - (int) line2.size()/2, 150});
-		renderer.render_text(line3, {SCREEN_WIDTH / 2 - (int) line2.size()/2, 175});
-	}
-	if ((
-			renderer.render_text(line2, {SCREEN_WIDTH / 2 - (int) line2.size()/2, 150});
-			std::string line2 = "Player 1: " + name;
-}
-
-bool Remote::is_init_done()
-{
-	return ((init_flag & NAME) && (init_flag & BALL) && (init_flag & READY));
-}
-
-void Remote::init_connexion()
-{
-	int fd;
-	struct sockaddr_in add;
-	int opt = 2;
-
-	memset(&add, 0, sizeof(add));
-	fd = socket(AF_INET, SOCK_STREAM, 0);
-	setsockopt(fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt));
-	add.sin_family = AF_INET;
-	add.sin_port = htons(PORT);
-	add.sin_addr.s_addr = inet_addr("127.0.0.1");
-	memset(add.sin_zero, 0, sizeof(add.sin_zero));
-	if (connect(fd, (struct sockaddr *) &add, sizeof(add)) < 0)
-	{
-		std::cerr << "Impossible to connect to server " << errno << std::endl;
-		stop = true;
-	}
-	TCP_Stream astream(fd, &add);
-	stream = astream;
-}
-
 void Remote::set_name()
 {
 	std::string message;
@@ -142,6 +39,7 @@ void Remote::set_name()
 		message = "Enter your name: " + name;
 		renderer.clear_screen();
 		renderer.render_text(message, {SCREEN_WIDTH / 2, SCREEN_HEIGHT /2});
+		renderer.render_now();
 		SDL_Event ev;
 		memset(&ev, 0, sizeof(ev));
 		while (SDL_PollEvent(&ev))
@@ -180,6 +78,93 @@ void Remote::set_name()
 	}
 	SDL_StopTextInput();
 	stop = false;
+}
+
+void Remote::init_connexion()
+{
+	if (!conn.connect_to_server())
+		stop = true;
+}
+
+void Remote::setup_game()
+{
+	Message message_name("name", name);
+	conn.send_message(message_name);
+	while (!stop)
+	{
+		setup_if_ready();
+		render_waiting_room();
+		check_event_waiting_room();
+	}
+	stop = false;
+}
+
+void Remote::setup_if_ready()
+{
+	if (conn.is_setup_done())
+	{
+		if (conn.is_player1())
+		{
+			racket1.set_name(name);
+			racket2.set_name(conn.get_foe_name());
+		}
+		else
+		{
+			racket2.set_name(name);
+			racket1.set_name(conn.get_foe_name());
+		}
+		ball.set_direction(conn.get_ball_direction());
+	}
+}
+
+void Remote::check_event_waiting_room()
+{
+	SDL_Event ev;
+
+	while (SDL_PollEvent(&ev))
+	{
+		if (event.type == SDL_QUIT)
+		{
+			stop = true;
+			quit = true;
+		}
+		if (event.type == SDL_KEYDOWN)
+		{
+			if (event.key.keysym.sym == SDLK_ESCAPE)
+				stop = true;
+			else if (event.key.keysym.sym == SDLK_SPACE && (conn.is_setup_done()))
+			{
+				Message ready_message("ready");
+				conn.send_message(ready_message);
+				stop = true;
+			}
+		}
+	}
+}
+
+void Remote::render_waiting_room()
+{
+
+	if (!conn.is_setup_done())
+	{
+		renderer.clear_screen();
+		renderer.render_text("Pong remote", {SCREEN_WIDTH / 2 - 5, 50});
+		std::string line1 = "Waiting for another player";
+		renderer.render_text(line1, {SCREEN_WIDTH / 2 -(int) line1.size()/2, 100});
+		std::string line2 = "Player 1: " + name;
+		renderer.render_text(line2, {SCREEN_WIDTH / 2 - (int) line2.size()/2, 150});
+		renderer.render_now();
+	}
+	else 
+	{
+		std::string line1 = "The game is full. Push space when ready.";
+		std::string line2 = "Player 1: " + racket1.get_name();
+		std::string line3 = "Player 2: " + racket2.get_name();
+		renderer.render_text(line1, {SCREEN_WIDTH / 2 - (int) line1.size()/2, 100});
+		renderer.render_text(line2, {SCREEN_WIDTH / 2 - (int) line2.size()/2, 150});
+		renderer.render_text(line3, {SCREEN_WIDTH / 2 - (int) line2.size()/2, 175});
+		renderer.render_now();
+	}
 }
 
 void Remote::onEvent()

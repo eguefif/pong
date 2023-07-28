@@ -23,17 +23,19 @@ void TCP_Stream::send_message(Message amessage)
 void TCP_Stream::read_message()
 {
 	char temp[MAX_SIZE];
-	int size;
+	int size = 0;
 	int retval = 0;
 
 	memset(temp, 0, sizeof(temp));
 	retval = receive(temp, 2);
 	if (retval == 2)
 	{
+		size = atoi(temp);
 		memset(temp, 0, sizeof(temp));
 		receive(temp, size);
 		Message message(temp);
 		messages.push_back(message);
+		std::cout << "Receiving " << message.get_message() << std::endl;
 	}
 }
 

@@ -13,6 +13,7 @@ class Renderer
 		void render_winner(std::string name) const;
 		void cleanup();
 		void render_text(std::string str, t_coord location);
+		void render_now();
 		void clear_screen();
 	
 	private:

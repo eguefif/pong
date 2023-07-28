@@ -241,14 +241,17 @@ void Renderer::render_text(std::string str, t_coord location)
 	dst.h = text->h;
 	SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, text);
 	SDL_RenderCopy(renderer, texture, NULL, &dst);
-	SDL_RenderPresent(renderer);
 	SDL_DestroyTexture(texture);
 	SDL_FreeSurface(text);
-
 }
 
 void Renderer::clear_screen()
 {
 	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
 	SDL_RenderClear(renderer);
+}
+
+void Renderer::render_now()
+{
+	SDL_RenderPresent(renderer);
 }

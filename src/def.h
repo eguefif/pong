@@ -9,6 +9,7 @@
 #include <ctime>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <queue>
 
@@ -31,3 +32,5 @@ typedef struct s_coord
 }		t_coord;
 
 SDL_Surface *load_surface(std::string path, SDL_Surface *sScreenSurface);
+
+void to_non_blocking(int fd);

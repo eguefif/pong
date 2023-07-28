@@ -3,16 +3,12 @@
 #include "game.h"
 #include "tcpstream.h"
 #include "message.h"
+#include "connexion.h"
 
 class Remote : private Game
 {
 	public:
 		Remote(SDL_Window *window);
-		enum e_init_flag {
-			NAME = 1 << 0,
-			BALL = 1 << 1,
-			READY = 1 << 2
-		};
 		virtual int onRun() override;
 	
 	protected:
@@ -25,10 +21,10 @@ class Remote : private Game
 		void set_name();
 		void init_connexion();
 		void setup_game();
-		bool is_init_done();
 		void render_waiting_room();
+		void check_event_waiting_room();
+		void setup_if_ready();
 
 		std::string name = "";
-		TCP_Stream stream;
-		int init_flag = 0;
+		Connexion conn;
 };
