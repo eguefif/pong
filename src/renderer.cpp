@@ -205,7 +205,7 @@ void Renderer::draw_racket(Racket racket) const
 
 void Renderer::render_waiting_room(Connexion conn, Racket racket1, Racket racket2, std::string name)
 {
-	if (conn.is_player1() && !conn.is_setup_ready())
+	if (conn.check_flags(PLAYER1) && !conn.is_setup_ready())
 	{
 		std::string line1 = "Waiting for another player";
 		std::string line2 = "Player 1: " + name;
@@ -231,11 +231,11 @@ void Renderer::render_waiting_room(Connexion conn, Racket racket1, Racket racket
 
 void Renderer::render_end_game(Connexion conn, bool server_down)
 {
-	if (conn.has_player_left())
+	if (conn.check_flags(PLAYER_LEFT))
 		render_text("Your opponent has left.", {SCREEN_WIDTH/2 - 12, SCREEN_HEIGHT / 2});
 	if (server_down = true)
 		render_text("Server down", {SCREEN_WIDTH/2 - 12, SCREEN_HEIGHT / 2 + 100});
-	else if (conn.has_server_stopped())
+	else if (conn.check_flags(SERVER_DISCONNECT))
 		render_text("The server has shutdown.", {SCREEN_WIDTH/2 - 12, SCREEN_HEIGHT / 2});
 
 	render_now();

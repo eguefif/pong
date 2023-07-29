@@ -24,9 +24,9 @@ int Remote::run()
 void Remote::check_event()
 {
 	check_start();
+	check_sdl_events();
 	if (start)
 	{
-		check_sdl_events();
 		check_keys();
 		update_connexion();
 	}
@@ -34,7 +34,7 @@ void Remote::check_event()
 
 void Remote::check_start()
 {
-	if (conn.is_start() && !start)
+	if (conn.check_flags(START) && !start)
 	{
 		start = true;
 		pause = false;
@@ -58,8 +58,7 @@ void Remote::check_sdl_events()
 				case SDLK_ESCAPE:	stop = true;
 									conn.send_end_of_game();
 								  break;
-				case SDLK_SPACE:	switch_pause();
-									conn.send_pause_status(pause);
+				case SDLK_SPACE: conn.send_pause();
 								 break;
 			}
 		}
@@ -70,7 +69,7 @@ void Remote::check_keys()
 {
 	const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
 
-	if (!conn.is_player1())
+	if (!conn.check_flags(PLAYER1))
 	{
 		if (currentKeyStates[SDL_SCANCODE_UP])
 		{
@@ -96,13 +95,26 @@ void Remote::check_keys()
 
 void Remote::update_connexion()
 {
-	conn.update();
 	check_connexion_pause();
 	check_connexion_game_over();
-	if (conn.is_player1())
+	if (conn.check_flags(PLAYER1))
 		sync_as_player1();
 	else
 		sync_as_player2();
+}
+
+void Remote::check_connexion_pause()
+{
+	if (conn.check_flags(PAUSE))
+		pause == true;
+	else
+		pause == false;
+}
+
+void Remote::check_connexion_game_over()
+{
+	if (conn.check_flags(GAMEOVER))
+		stop = true;
 }
 
 void Remote::sync_as_player1()
@@ -124,26 +136,9 @@ void Remote::sync_as_player2()
 	racket2.set_score(conn.get_score2());
 }
 
-void Remote::check_connexion_pause()
-{
-	if (conn.is_pause())
-		pause == true;
-	else
-		pause == false;
-}
-
-void Remote::check_connexion_game_over()
-{
-	if (conn.is_game_over())
-	{
-		stop = true;
-		return;
-	}
-}
-
 void Remote::handle_disconnection()
 {
-	if (conn.has_player_left() || conn.has_server_stopped() || server_down)
+	if (conn.check_flags(SERVER_DISCONNECT) || conn.check_flags(PLAYER_LEFT) || server_down)
 		render_end_of_game();
 }
 

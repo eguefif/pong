@@ -126,7 +126,7 @@ void Remote::setup_if_ready()
 {
 	if (conn.is_setup_ready() && !setup)
 	{
-		if (conn.is_player1())
+		if (conn.check_flags(PLAYER1))
 		{
 			racket1.set_name(name);
 			racket2.set_name(conn.get_foe_name());

@@ -28,61 +28,30 @@ bool Connexion::connect_to_server()
 	return (true);
 }
 
+bool Connexion::check_flags(int flag)
+{
+	update();
+	return (game_flags & flag);
+}
+
+void Connexion::set_flags(int flag)
+{
+	game_flags |= flag;
+}
+
+void Connexion::unset_flags(int flag)
+{
+	game_flags &= ~flag;
+}
+
+void Connexion::flip_flags(int flag)
+{
+	game_flags ^= flag;
+}
 bool Connexion::is_setup_ready()
 {
-	check_message();
-	return (((init_flag & NAME) == NAME) && ((init_flag & BALL) == BALL) && ((init_flag & FULL) == FULL));
-}
-
-bool Connexion::is_player1()
-{
-	return (init_flag & WAITING);
-}
-
-void Connexion::check_message()
-{
-	stream.read_message();
-	for (auto message =  stream.messages.begin(); message != stream.messages.end(); ++message)
-	{
-		if (message->get_command() == "waiting")
-		{
-			init_flag |= WAITING;
-			stream.messages.erase(message);
-			break;
-		}
-		if (message->get_command() == "joining")
-		{
-			init_flag |= JOINING;
-			stream.messages.erase(message);
-			break;
-		}
-		if (message->get_command() == "ball")
-		{
-			init_flag |= BALL;
-			ball_direction = atoi(message->get_content().c_str());
-			stream.messages.erase(message);
-			break;
-		}
-		if (message->get_command() == "name")
-		{
-			init_flag |= NAME;
-			foe_name = message->get_content();
-			stream.messages.erase(message);
-			break;
-		}
-		if (message->get_command() == "ready")
-		{
-			init_flag |= READY;
-			stream.messages.erase(message);
-			break;
-		}
-		if (message->get_command() == "full")
-		{
-			init_flag |= FULL;
-			stream.messages.erase(message);
-			break;
-		}
-	}
+	update();
+	return (((game_flags & NAME) == NAME) && ((game_flags & BALL) == BALL) && ((game_flags & FULL) == FULL));
 }
 
 std::string Connexion::get_foe_name()
@@ -90,27 +59,9 @@ std::string Connexion::get_foe_name()
 	return (foe_name);
 }
 
-bool Connexion::is_start()
-{
-	stream.read_message();
-	for (auto message = stream.messages.begin(); message != stream.messages.end(); ++ message)
-	{
-		if (message->get_command() == "start")
-		{
-			return (true);
-		}
-	}
-	return (false);
-}
-
 void Connexion::send_message(Message message)
 {
 	stream.send_message(message);
-}
-
-void Connexion::cleanup()
-{
-	stream.cleanup();
 }
 
 void Connexion::sync_ball_racket_score(Ball ball, Racket racket1, Racket racket2)
@@ -152,83 +103,74 @@ int Connexion::get_ball_direction()
 void Connexion::update()
 {
 	stream.read_message();
-	update_ball();
-	update_racket();
-	update_pause();
-	update_is_over();
-	update_score();
-}
-
-void Connexion::update_ball()
-{
 	for (auto message = stream.messages.begin(); message != stream.messages.end(); ++ message)
 	{
 		if (message->get_command() == "bally")
-		{
 			ball.y = atoi(message->get_content().c_str());
-		}
 		if (message->get_command() == "ballx")
-		{
 			ball.x = atoi(message->get_content().c_str());
-		}
-	}
-	for (auto message = stream.messages.begin(); message != stream.messages.end(); ++ message)
-	{
 		if (message->get_command() == "direction")
-		{
 			ball_direction = atoi(message->get_content().c_str());
-		}
-	}
-}
-
-void Connexion::update_racket()
-{
-	for (auto message = stream.messages.begin(); message != stream.messages.end(); ++ message)
-	{
 		if (message->get_command() == "rackety")
-		{
 			racket = (atoi(message->get_content().c_str()));
-		}
-	}
-}
-
-void Connexion::update_pause()
-{
-	for (auto message = stream.messages.begin(); message != stream.messages.end(); ++ message)
-	{
 		if (message->get_command() == "pause")
-			pause = true;
-		if (message->get_command() == "unpause")
-			pause = false;
-	}
-}
-
-void Connexion::update_is_over()
-{
-	for (auto message = stream.messages.begin(); message != stream.messages.end(); ++ message)
-	{
+		{
+			std::cout << "Before Pause:" << check_flags(PAUSE) << std::endl;
+			flip_flags(PAUSE);
+			std::cout << "After Pause:" << check_flags(PAUSE) << std::endl;
+		}
 		if (message->get_command() == "EOG")
 		{
 			if (message->get_content() == "player")
-				foe_left = true;
+				set_flags(PLAYER_LEFT);
 			else if (message->get_content() == "server")
-					server_terminated = true;
-			finished = true;
+				set_flags(SERVER_TERM);
+			set_flags(FINISHED);
 		}
-	}
-}
-
-void Connexion::update_score()
-{
-	for (auto message = stream.messages.begin(); message != stream.messages.end(); ++ message)
-	{
 		if (message->get_command() == "score1")
-		{
 			score1 = atoi(message->get_content().c_str());
-		}
 		if (message->get_command() == "score2")
-		{
 			score2 = atoi(message->get_content().c_str());
+		if (message->get_command() == "start")
+			set_flags(START);
+		if (message->get_command() == "waiting")
+		{
+			game_flags |= WAITING;
+			game_flags |= PLAYER1;
+			stream.messages.erase(message);
+			break;
+		}
+		if (message->get_command() == "joining")
+		{
+			game_flags |= JOINING;
+			stream.messages.erase(message);
+			break;
+		}
+		if (message->get_command() == "ball")
+		{
+			game_flags |= BALL;
+			ball_direction = atoi(message->get_content().c_str());
+			stream.messages.erase(message);
+			break;
+		}
+		if (message->get_command() == "name")
+		{
+			game_flags |= NAME;
+			foe_name = message->get_content();
+			stream.messages.erase(message);
+			break;
+		}
+		if (message->get_command() == "ready")
+		{
+			game_flags |= READY;
+			stream.messages.erase(message);
+			break;
+		}
+		if (message->get_command() == "full")
+		{
+			game_flags |= FULL;
+			stream.messages.erase(message);
+			break;
 		}
 	}
 }
@@ -239,28 +181,10 @@ void Connexion::send_end_of_game()
 	stream.send_message(message);
 }
 
-bool Connexion::is_pause()
+void Connexion::send_pause()
 {
-	return (pause);
-}
-
-bool Connexion::is_game_over()
-{
-	return (finished);
-}
-
-void Connexion::send_pause_status(bool pause_status)
-{
-	if (pause_status == true)
-	{
-		Message message("pause", "");
-		stream.send_message(message);
-	}
-	else
-	{
-		Message message("unpause", "");
-		stream.send_message(message);
-	}
+	Message message("pause", "");
+	stream.send_message(message);
 }
 
 int Connexion::get_score1()
@@ -273,12 +197,8 @@ int Connexion::get_score2()
 	return (score2);
 }
 
-bool Connexion::has_player_left()
+void Connexion::cleanup()
 {
-	return (foe_left);
+	stream.cleanup();
 }
 
-bool Connexion::has_server_stopped()
-{
-	return (server_terminated);
-}
