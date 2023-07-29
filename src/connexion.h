@@ -20,7 +20,7 @@ public:
 			FULL = 1 << 6
 		};
 	bool connect_to_server();
-	bool is_setup_done();
+	bool is_setup_ready();
 	int get_ball_direction();
 	bool is_player1();
 	std::string get_foe_name();

@@ -203,6 +203,44 @@ void Renderer::draw_racket(Racket racket) const
 	SDL_RenderFillRect(renderer, &racketrec);
 }
 
+void Renderer::render_waiting_room(Connexion conn, Racket racket1, Racket racket2, std::string name)
+{
+	if (conn.is_player1() && !conn.is_setup_ready())
+	{
+		std::string line1 = "Waiting for another player";
+		std::string line2 = "Player 1: " + name;
+
+		clear_screen();
+		render_text("Pong remote", {SCREEN_WIDTH / 2 - 5, 50});
+		render_text(line1, {SCREEN_WIDTH / 2 -(int) line1.size()/2, 100});
+		render_text(line2, {SCREEN_WIDTH / 2 - (int) line2.size()/2, 150});
+		render_now();
+	}
+	else
+	{
+		std::string line1 = "The game is full. Push return when ready.";
+		std::string line2 = "Player 1: " + racket1.get_name();
+		std::string line3 = "Player 2: " + racket2.get_name();
+		clear_screen();
+		render_text(line1, {SCREEN_WIDTH / 2 - (int) line1.size()/2, 100});
+		render_text(line2, {SCREEN_WIDTH / 2 - (int) line2.size()/2, 150});
+		render_text(line3, {SCREEN_WIDTH / 2 - (int) line2.size()/2, 200});
+		render_now();
+	}
+}
+
+void Renderer::render_end_game(Connexion conn, bool server_down)
+{
+	if (conn.has_player_left())
+		render_text("Your opponent has left.", {SCREEN_WIDTH/2 - 12, SCREEN_HEIGHT / 2});
+	if (server_down = true)
+		render_text("Server down", {SCREEN_WIDTH/2 - 12, SCREEN_HEIGHT / 2 + 100});
+	else if (conn.has_server_stopped())
+		render_text("The server has shutdown.", {SCREEN_WIDTH/2 - 12, SCREEN_HEIGHT / 2});
+
+	render_now();
+}
+
 void Renderer::render_winner(std::string name) const
 {
 	SDL_Rect dst;

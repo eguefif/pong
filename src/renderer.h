@@ -2,6 +2,7 @@
 #include "def.h"
 #include "ball.h"
 #include "racket.h"
+#include "connexion.h"
 
 class Renderer
 {
@@ -13,8 +14,10 @@ class Renderer
 		void render_winner(std::string name) const;
 		void cleanup();
 		void render_text(std::string str, t_coord location);
-		void render_now();
 		void clear_screen();
+		void render_end_game(Connexion conn, bool server_down);
+		void render_waiting_room(Connexion conn, Racket racket1, Racket racket2, std::string name);
+		void render_now();
 	
 	private:
 		SDL_Renderer *renderer = NULL;

@@ -28,7 +28,7 @@ bool Connexion::connect_to_server()
 	return (true);
 }
 
-bool Connexion::is_setup_done()
+bool Connexion::is_setup_ready()
 {
 	check_message();
 	return (((init_flag & NAME) == NAME) && ((init_flag & BALL) == BALL) && ((init_flag & FULL) == FULL));

@@ -17,9 +17,5 @@ int IA::where_to_go(Ball ball, Racket racket)
 			retval = DOWN;
 		}
 	}
-
-	std::cout << "ball x: " << ball.get_x() << std::endl;
-	std::cout << "ball y: " << ball.get_y() << " racket y: " << racket.get_y() + RACKET_HEIGHT/2 << std::endl;
-	std::cout << "direction: " << retval << std::endl;
 	return (retval);
 }
