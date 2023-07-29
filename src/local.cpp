@@ -7,7 +7,6 @@ void Local::onEvent()
 {
 	check_events();
 	check_keys();
-	check_scorer();
 }
 
 void Local::check_events()
@@ -44,8 +43,4 @@ void Local::check_keys()
 			racket1.down();
 	else if (currentKeyStates[SDL_SCANCODE_Q])
 			racket1.up();
-}
-
-void Local::check_scorer()
-{
 }

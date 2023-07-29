@@ -4,9 +4,9 @@ FLAGS=-w
 INCLUDE=-I./src -ISDL
 LIB=-lSDL2 -lSDL2_image -lSDL2_ttf
 
-_SRC=main.cpp pong.cpp game.cpp menu.cpp remote.cpp local.cpp computer.cpp racket.cpp ball.cpp renderer.cpp utils.cpp tcpstream.cpp message.cpp connexion.cpp init_remote_game.cpp
+_SRC=main.cpp pong.cpp game.cpp menu.cpp remote.cpp local.cpp computer.cpp racket.cpp ball.cpp renderer.cpp utils.cpp tcpstream.cpp message.cpp connexion.cpp init_remote_game.cpp ia.cpp
 _OBJ=$(_SRC:.cpp=.o)
-_INC=pong.h menu.h game.h remote.h computer.h racket.h ball.h renderer.h tcpstream.h message.h connexion.h
+_INC=pong.h menu.h game.h remote.h computer.h racket.h ball.h renderer.h tcpstream.h message.h connexion.h ia.h def.h
 SDIR=./src/
 ODIR=./obj/
 IDIR=./src/

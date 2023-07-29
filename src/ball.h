@@ -17,6 +17,8 @@ class Ball
 		int get_direction();
 		int get_x();
 		int get_y();
+		int get_vy();
+		int get_vx();
 
 	private:
 		t_coord location;

@@ -13,6 +13,5 @@ class Local : protected Game
 
 	private:
 		void check_keys();
-		void check_scorer();
 		void check_events();
 };

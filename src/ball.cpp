@@ -141,3 +141,13 @@ int Ball::get_y()
 {
 	return (location.y);
 }
+
+int Ball::get_vy()
+{
+	return (y_vec);
+}
+
+int Ball::get_vx()
+{
+	return (x_vec);
+}
