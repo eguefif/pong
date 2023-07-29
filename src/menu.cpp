@@ -4,20 +4,19 @@ Menu::Menu(SDL_Window *aWindow) :
 	window(aWindow)
 {}
 
-int Menu::onRun()
+int Menu::run()
 {
-	onInit();
-	while(!quit)
+	init();
+	while(!stop)
 	{
-		onEvent();
-		onUpdate();
-		onRender();
+		check_event();
+		render();
 	}
-	onCleanup();
-	return selector_position;
+	cleanup();
+	return (selector_position);
 }
 
-void Menu::onInit()
+void Menu::init()
 {
 	int img_flag = IMG_INIT_PNG;
 	load_image_path();
@@ -38,29 +37,27 @@ void Menu::onInit()
 
 void Menu::load_image_path()
 {
-	std::string image3 = "./ressource/pvpr.png";
-	std::string image2 = "./ressource/pvpl.png";
-	std::string image4 = "./ressource/pvc.png";
-	std::string image5 = "./ressource/exit.png";
-	std::string image1 = "./ressource/pong.png";
-	std::string selector = "./ressource/selector.png";
+	std::string pvpr = "./ressource/pvpr.png";
+	std::string pvpl = "./ressource/pvpl.png";
+	std::string pvc = "./ressource/pvc.png";
+	std::string exit = "./ressource/exit.png";
 
-	title_path = image1;
-	selector_path = selector;
-	images_path.push_back(image2);
-	images_path.push_back(image3);
-	images_path.push_back(image4);
-	images_path.push_back(image5);
+	title_path = "./ressource/pong.png";
+	selector_path = "./ressource/selector.png";
+	images_path.push_back(pvpr);
+	images_path.push_back(pvpl);
+	images_path.push_back(pvc);
+	images_path.push_back(exit);
 }
 
-void Menu::onEvent()
+void Menu::check_event()
 {
 	while (SDL_PollEvent(&event) != 0)
 	{
 		if (event.type == SDL_QUIT)
 		{
-			quit = true;
-			selector_position = 3;
+			stop = true;
+			selector_position = EXIT;
 		}
 		else if (event.type == SDL_KEYDOWN)
 		{
@@ -71,62 +68,15 @@ void Menu::onEvent()
 				case SDLK_DOWN: move_selector_down();
 								break;
 				case SDLK_SPACE:
-				case SDLK_RETURN: quit = true;
+				case SDLK_RETURN: stop = true;
 								  break;
-				case SDLK_ESCAPE: quit = true;
-								  selector_position = 3;
+				case SDLK_ESCAPE: stop = true;
+								  selector_position = EXIT;
 								  break;
 				default: break;
 			}
 		}
 	}
-}
-
-void Menu::onUpdate()
-{}
-
-void Menu::onRender()
-{
-	int y;
-	SDL_Rect dst;
-
-	SDL_FillRect(sScreenSurface, NULL, 0x000000);
-	display_title();
-	y = TITLE_DISTANCE;
-	for (auto surface : images_surface)
-	{
-		dst.w = surface->w;
-		dst.h = surface->h;
-		dst.x = SCREEN_WIDTH / 2 - surface->w / 2;
-		dst.y = y;
-		SDL_BlitSurface(surface, NULL, sScreenSurface, &dst);
-		y += dst.h + 10;
-	}
-	display_selector();
-	SDL_UpdateWindowSurface(window);
-}
-
-void Menu::display_title()
-{
-	SDL_Rect dst;
-
-	dst.w = title->w;
-	dst.h = title->h;
-	dst.x = SCREEN_WIDTH / 2 - title->w / 2;
-	dst.y = 5;
-	SDL_BlitSurface(title, NULL, sScreenSurface, &dst);
-
-}
-
-void Menu::display_selector()
-{
-	SDL_Rect dst;
-
-	dst.w = selector->w;
-	dst.h = selector->h;
-	dst.x = SCREEN_WIDTH / 2 - images_surface[selector_position]->w / 2 - selector->w - 10;
-	dst.y = TITLE_DISTANCE + images_surface[1]->h * selector_position + 10 ;
-	SDL_BlitScaled(selector, NULL, sScreenSurface, &dst);
 }
 
 void Menu::move_selector_up()
@@ -145,7 +95,55 @@ void Menu::move_selector_down()
 		selector_position += 1;
 }
 
-void Menu::onCleanup()
+void Menu::render()
+{
+	SDL_FillRect(sScreenSurface, NULL, 0x000000);
+	display_title();
+	display_selector();
+	display_menu_items();
+	SDL_UpdateWindowSurface(window);
+}
+
+void Menu::display_menu_items()
+{
+	int y;
+	SDL_Rect dst;
+
+	y = TITLE_DISTANCE;
+	for (auto surface : images_surface)
+	{
+		dst.w = surface->w;
+		dst.h = surface->h;
+		dst.x = SCREEN_WIDTH / 2 - surface->w / 2;
+		dst.y = y;
+		SDL_BlitSurface(surface, NULL, sScreenSurface, &dst);
+		y += dst.h + 10;
+	}
+}
+
+void Menu::display_title()
+{
+	SDL_Rect dst;
+
+	dst.w = title->w;
+	dst.h = title->h;
+	dst.x = SCREEN_WIDTH / 2 - title->w / 2;
+	dst.y = 5;
+	SDL_BlitSurface(title, NULL, sScreenSurface, &dst);
+}
+
+void Menu::display_selector()
+{
+	SDL_Rect dst;
+
+	dst.w = selector->w;
+	dst.h = selector->h;
+	dst.x = SCREEN_WIDTH / 2 - images_surface[selector_position]->w / 2 - selector->w - 10;
+	dst.y = TITLE_DISTANCE + images_surface[1]->h * selector_position + 10 ;
+	SDL_BlitScaled(selector, NULL, sScreenSurface, &dst);
+}
+
+void Menu::cleanup()
 {
 	for (auto image_surface = images_surface.begin();
 			image_surface != images_surface.end();

@@ -1,6 +1,6 @@
 #include "pong.h"
 
-void Pong::onRun()
+void Pong::run()
 {
 	int retval;
 
@@ -29,7 +29,7 @@ void Pong::init_sdl_and_window()
 void Pong::run_menu()
 {
 	Menu menu = Menu(window);
-	game_type = menu.onRun();
+	game_type = menu.run();
 }
 
 void Pong::run_game()
