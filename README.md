@@ -1,4 +1,4 @@
-# chat
+# Pong
 Pong game with three game modes: local, remote and computer. Games are played in 5 rounds.
 
 ## Description
