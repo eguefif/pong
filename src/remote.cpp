@@ -4,30 +4,30 @@ Remote::Remote(SDL_Window *window) :
 	Game(window)
 {}
 
-int Remote::onRun()
+int Remote::run()
 {
 	init_remote_game();
 	while (!stop)
 	{
-		onEvent();
-		onUpdate();
-		onRender();
+		check_event();
+		update();
+		render();
 	}
 	if (conn.has_player_left() || conn.has_server_stopped() || server_down)
 		render_end_of_game();
-	onCleanup();
-	if (quit)
-		return (3);
-	return (0);
+	cleanup();
+	if (quit_app)
+		return (0);
+	return (1);
 
 }
 
-void Remote::onEvent()
+void Remote::check_event()
 {
 	check_start();
 	if (start)
 	{
-		check_events();
+		check_sdl_events();
 		check_keys();
 		update_connexion();
 	}
@@ -42,7 +42,7 @@ void Remote::check_start()
 	}
 }
 
-void Remote::check_events()
+void Remote::check_sdl_events()
 {
 	while (SDL_PollEvent(&event) != 0)
 	{
@@ -50,7 +50,7 @@ void Remote::check_events()
 		{
 			conn.send_end_of_game();
 			stop = true;
-			quit = true;
+			quit_app = true;
 		}
 		else if(event.type == SDL_KEYDOWN)
 		{
@@ -128,7 +128,7 @@ void Remote::update_connexion()
 	}
 }
 
-void Remote::onCleanup()
+void Remote::cleanup()
 {
 	conn.cleanup();
 	renderer.cleanup();
@@ -152,7 +152,7 @@ void Remote::render_end_of_game()
 			if (event.type == SDL_QUIT)
 			{
 				stop = true;
-				quit = true;
+				quit_app = true;
 			}
 			else if(event.type == SDL_KEYDOWN)
 			{

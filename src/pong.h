@@ -9,7 +9,7 @@
 class Pong
 {
 	public:
-		enum gameType {LOCAL=0, REMOTE=1, COMPUTER=2, EXIT=3};
+		enum gameType {EXIT=0, LOCAL=1, REMOTE=2, COMPUTER=3};
 		enum side {LEFT=0, RIGHT=1};
 		void run();
 

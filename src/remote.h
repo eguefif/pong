@@ -9,14 +9,14 @@ class Remote : private Game
 {
 	public:
 		Remote(SDL_Window *window);
-		virtual int onRun() override;
+		virtual int run() override;
 	
 	protected:
-		virtual void onEvent() override;
-		virtual void onCleanup() override;
+		virtual void check_event() override;
+		virtual void cleanup() override;
 	
 	private:
-		void check_events();
+		void check_sdl_events();
 		void check_keys();
 		void init_remote_game();
 		void set_name();

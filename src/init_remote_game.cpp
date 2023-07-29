@@ -46,7 +46,7 @@ void Remote::set_name()
 			{
 				SDL_StopTextInput();
 				stop = true;
-				quit = true;
+				quit_app = true;
 				return;
 			}
 			else if (ev.type == SDL_TEXTINPUT)
@@ -110,7 +110,7 @@ void Remote::check_event_waiting_room()
 		if (event.type == SDL_QUIT)
 		{
 			stop = true;
-			quit = true;
+			quit_app = true;
 		}
 		if (event.type == SDL_KEYDOWN)
 		{

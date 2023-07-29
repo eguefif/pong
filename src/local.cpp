@@ -3,20 +3,20 @@
 Local::Local(SDL_Window *window) : Game(window)
 {}
 
-void Local::onEvent()
+void Local::check_event()
 {
-	check_events();
+	check_sdl_events();
 	check_keys();
 }
 
-void Local::check_events()
+void Local::check_sdl_events()
 {
 	while (SDL_PollEvent(&event) != 0)
 	{
 		if (event.type == SDL_QUIT)
 		{
 			stop = true;
-			quit = true;
+			quit_app = true;
 		}
 		else if(event.type == SDL_KEYDOWN)
 		{

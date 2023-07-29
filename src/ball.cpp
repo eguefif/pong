@@ -55,7 +55,7 @@ void Ball::reverse_y_vec()
 	y_vec = -y_vec;
 }
 
-bool Ball::is_score()
+bool Ball::is_scorer()
 {
 	scorer = -1;
 	if (location.x + radius > SCREEN_WIDTH)

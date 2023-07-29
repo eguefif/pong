@@ -13,6 +13,8 @@ int Menu::run()
 		render();
 	}
 	cleanup();
+	if (selector_position == 4)
+		selector_position = EXIT;
 	return (selector_position);
 }
 
@@ -44,8 +46,8 @@ void Menu::load_image_path()
 
 	title_path = "./ressource/pong.png";
 	selector_path = "./ressource/selector.png";
-	images_path.push_back(pvpr);
 	images_path.push_back(pvpl);
+	images_path.push_back(pvpr);
 	images_path.push_back(pvc);
 	images_path.push_back(exit);
 }
@@ -81,16 +83,16 @@ void Menu::check_event()
 
 void Menu::move_selector_up()
 {
-	if (selector_position == 0)
-		selector_position = 3;
+	if (selector_position == 1)
+		selector_position = 4;
 	else
 		selector_position -= 1;
 }
 
 void Menu::move_selector_down()
 {
-	if (selector_position == 3)
-		selector_position = 0;
+	if (selector_position == 4)
+		selector_position = 1;
 	else
 		selector_position += 1;
 }
@@ -138,8 +140,8 @@ void Menu::display_selector()
 
 	dst.w = selector->w;
 	dst.h = selector->h;
-	dst.x = SCREEN_WIDTH / 2 - images_surface[selector_position]->w / 2 - selector->w - 10;
-	dst.y = TITLE_DISTANCE + images_surface[1]->h * selector_position + 10 ;
+	dst.x = SCREEN_WIDTH / 2 - images_surface[selector_position-1]->w / 2 - selector->w - 10;
+	dst.y = TITLE_DISTANCE + images_surface[1]->h * (selector_position-1) + 10 ;
 	SDL_BlitScaled(selector, NULL, sScreenSurface, &dst);
 }
 

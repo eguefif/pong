@@ -6,7 +6,7 @@
 class Menu
 {
 	public:
-		enum gameType {EXIT=0, COMPUTER=1, LOCAL=2, REMOTE=3};
+		enum gameType {EXIT=0, LOCAL=1, REMOTE=2, COMPUTER=3};
 		Menu(SDL_Window *aWindow);
 		int run();
 
@@ -32,7 +32,7 @@ class Menu
 		std::vector<std::string> images_path;
 		std::vector<SDL_Surface*> images_surface;
 		SDL_Event event;
-		int selector_position = 0;
+		int selector_position = 1;
 };
 
 #endif

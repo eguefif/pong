@@ -39,17 +39,17 @@ void Pong::run_game()
 	if (game_type == LOCAL)
 	{
 		Local game(window);
-		retval = game.onRun();
+		retval = game.run();
 	}
 	else if (game_type == REMOTE)
 	{
 		Remote game(window);
-		retval = game.onRun();
+		retval = game.run();
 	}
 	else if (game_type == COMPUTER)
 	{
 		Computer game(window);
-		retval = game.onRun();
+		retval = game.run();
 	}
 
 	if(retval == EXIT)

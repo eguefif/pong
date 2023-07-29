@@ -5,21 +5,21 @@ Computer::Computer(SDL_Window *window) :
 {
 }
 
-void Computer::onEvent()
+void Computer::check_event()
 {
-	check_events();
+	check_sdl_events();
 	check_keys();
 	check_ia();
 }
 
-void Computer::check_events()
+void Computer::check_sdl_events()
 {
 	while (SDL_PollEvent(&event) != 0)
 	{
 		if (event.type == SDL_QUIT)
 		{
 			stop = true;
-			quit = true;
+			quit_app = true;
 		}
 		else if(event.type == SDL_KEYDOWN)
 		{
