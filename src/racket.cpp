@@ -33,6 +33,21 @@ void Racket::move()
 	y_vec = 0;
 }
 
+bool Racket::is_colliding(t_coord loc)
+{
+	if (side == LEFT)
+	{
+		if (loc.x - RADIUS <= location.x + RACKET_WIDTH && is_at_racket_level(loc.y))
+			return (true);
+	}
+	else if (side == RIGHT)
+	{
+		if (loc.x + RADIUS >= location.x && is_at_racket_level(loc.y))
+			return (true);
+	}
+	return (false);
+}
+
 bool Racket::is_collision()
 {
 	if (y_vec > 0)
@@ -42,7 +57,7 @@ bool Racket::is_collision()
 	}
 	else if (y_vec < 0)
 	{
-		if (location.y <= TOP_EDGE)
+		if (location.y <= TOP_EDGE + 1)
 			return true;
 	}
 	return false;
@@ -58,20 +73,6 @@ int Racket::get_y()
 	return (location.y);
 }
 
-bool Racket::is_colliding(t_coord loc)
-{
-	if (side == LEFT)
-	{
-		if (loc.x - RADIUS <= location.x + RACKET_WIDTH && is_at_racket_level(loc.y))
-			return (true);
-	}
-	else if (side == RIGHT)
-	{
-		if (loc.x + RADIUS >= location.x && is_at_racket_level(loc.y))
-			return (true);
-	}
-	return (false);
-}
 
 bool Racket::is_at_racket_level(int y)
 {

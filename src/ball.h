@@ -8,17 +8,17 @@ class Ball
 		Ball();
 		enum side {LEFT = 0, RIGHT = 1};
 		void move(Racket racket1, Racket racket2);
-		float get_radius();
-		t_coord get_location();
 		bool is_scorer();
+		float get_radius();
 		int get_scorer();
-		void set_location(t_coord loc);
-		void set_direction(int n);
+		t_coord get_location();
 		int get_direction();
 		int get_x();
 		int get_y();
 		int get_vy();
 		int get_vx();
+		void set_location(t_coord loc);
+		void set_direction(int n);
 
 	private:
 		t_coord location;
@@ -30,6 +30,4 @@ class Ball
 		void check_collision(Racket racket1, Racket racket2);
 		void reverse_y_vec();
 		void reverse_x_vec();
-		void score_right(Racket racket1, Racket racket2);
-		void score_left(Racket racket1, Racket racket2);
 };
