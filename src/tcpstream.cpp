@@ -14,9 +14,14 @@ void TCP_Stream::send_message(Message amessage)
 {
 	char message[MAX_SIZE];
 
+	add_protoheader(message, amessage);
+	sendto(message, strlen(message));
+}
+
+void TCP_Stream::add_protoheader(char *message, Message amessage)
+{
 	memset(message, 0, sizeof(message));
 	sprintf(message, "%02d%s", (int) amessage.get_size(), amessage.get_message_tosend());
-	sendto(message, strlen(message));
 }
 
 void TCP_Stream::read_message()
@@ -59,12 +64,6 @@ size_t TCP_Stream::receive(char *buffer, size_t len)
 	return (retval);
 }
 
-void TCP_Stream::cleanup()
-{
-	messages.clear();
-	close(sock);
-}
-
 std::string TCP_Stream::get_addr()
 {
 	return (peer_add);
@@ -73,4 +72,10 @@ std::string TCP_Stream::get_addr()
 int TCP_Stream::get_port()
 {
 	return (peer_port);
+}
+
+void TCP_Stream::cleanup()
+{
+	messages.clear();
+	close(sock);
 }
