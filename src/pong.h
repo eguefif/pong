@@ -11,15 +11,15 @@ class Pong
 	public:
 		enum gameType {LOCAL=0, REMOTE=1, COMPUTER=2, EXIT=3};
 		enum side {LEFT=0, RIGHT=1};
-		void onRun();
+		void run();
 
 	private:
 		SDL_Window *window = NULL;
 		bool quit = false;
+		int game_type = COMPUTER;
 
-		void onInit();
-		int onMenu();
-		int onCreateGame(int type);
-		void onCleanup();
-		void onEvent();
+		void init_sdl_and_window();
+		void run_menu();
+		void run_game();
+		void cleanup();
 };

@@ -5,6 +5,6 @@ int main(void)
 {
 	Pong p;
 
-	p.onRun();
+	p.run();
 	return 0;
 }
