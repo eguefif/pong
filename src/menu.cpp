@@ -9,8 +9,8 @@ int Menu::run()
 	init();
 	while(!stop)
 	{
-		check_event();
 		render();
+		check_event();
 	}
 	cleanup();
 	if (selector_position == 4)
