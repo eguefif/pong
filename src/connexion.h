@@ -37,7 +37,7 @@ public:
 	void sync_ball_racket_score(Ball ball, Racket racket1, Racket racket2);
 	void sync_racket(Racket racket);
 	void send_end_of_game();
-	void send_pause();
+	void send_pause_status(bool pause);
 	void update();
 	int get_ball_direction();
 	std::string get_foe_name();

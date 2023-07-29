@@ -58,7 +58,9 @@ void Remote::check_sdl_events()
 				case SDLK_ESCAPE:	stop = true;
 									conn.send_end_of_game();
 								  break;
-				case SDLK_SPACE: conn.send_pause();
+				case SDLK_SPACE: //switch_pause();
+								 //conn.flip_flags(PAUSE);
+								 //conn.send_pause_status(pause);
 								 break;
 			}
 		}
@@ -95,8 +97,8 @@ void Remote::check_keys()
 
 void Remote::update_connexion()
 {
-	check_connexion_pause();
 	check_connexion_game_over();
+	check_connexion_pause();
 	if (conn.check_flags(PLAYER1))
 		sync_as_player1();
 	else

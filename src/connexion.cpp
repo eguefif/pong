@@ -48,6 +48,7 @@ void Connexion::flip_flags(int flag)
 {
 	game_flags ^= flag;
 }
+
 bool Connexion::is_setup_ready()
 {
 	update();
@@ -103,7 +104,7 @@ int Connexion::get_ball_direction()
 void Connexion::update()
 {
 	stream.read_message();
-	for (auto message = stream.messages.begin(); message != stream.messages.end(); ++ message)
+	for (auto message = stream.messages.begin(); message != stream.messages.end(); ++message)
 	{
 		if (message->get_command() == "bally")
 			ball.y = atoi(message->get_content().c_str());
@@ -114,11 +115,9 @@ void Connexion::update()
 		if (message->get_command() == "rackety")
 			racket = (atoi(message->get_content().c_str()));
 		if (message->get_command() == "pause")
-		{
-			std::cout << "Before Pause:" << check_flags(PAUSE) << std::endl;
-			flip_flags(PAUSE);
-			std::cout << "After Pause:" << check_flags(PAUSE) << std::endl;
-		}
+			set_flags(PAUSE);
+		if (message->get_command() == "unpause")
+			unset_flags(PAUSE);
 		if (message->get_command() == "EOG")
 		{
 			if (message->get_content() == "player")
@@ -135,44 +134,27 @@ void Connexion::update()
 			set_flags(START);
 		if (message->get_command() == "waiting")
 		{
-			game_flags |= WAITING;
-			game_flags |= PLAYER1;
-			stream.messages.erase(message);
-			break;
+			set_flags(WAITING);
+			set_flags(PLAYER1);
 		}
 		if (message->get_command() == "joining")
-		{
-			game_flags |= JOINING;
-			stream.messages.erase(message);
-			break;
-		}
+			set_flags(JOINING);
 		if (message->get_command() == "ball")
 		{
-			game_flags |= BALL;
+			set_flags(BALL);
 			ball_direction = atoi(message->get_content().c_str());
-			stream.messages.erase(message);
-			break;
 		}
 		if (message->get_command() == "name")
 		{
-			game_flags |= NAME;
+			set_flags(NAME);
 			foe_name = message->get_content();
-			stream.messages.erase(message);
-			break;
 		}
 		if (message->get_command() == "ready")
-		{
-			game_flags |= READY;
-			stream.messages.erase(message);
-			break;
-		}
+			set_flags(READY);
 		if (message->get_command() == "full")
-		{
-			game_flags |= FULL;
-			stream.messages.erase(message);
-			break;
-		}
+			set_flags(FULL);
 	}
+	stream.messages.clear();
 }
 
 void Connexion::send_end_of_game()
@@ -181,10 +163,18 @@ void Connexion::send_end_of_game()
 	stream.send_message(message);
 }
 
-void Connexion::send_pause()
+void Connexion::send_pause_status(bool pause)
 {
-	Message message("pause", "");
-	stream.send_message(message);
+	if (pause)
+	{
+		Message message("pause", "");
+		send_message(message);
+	}
+	else
+	{
+		Message message("unpause", "");
+		send_message(message);
+	}
 }
 
 int Connexion::get_score1()
