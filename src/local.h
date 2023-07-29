@@ -1,5 +1,5 @@
 #pragma once
-#include "pong.h"
+#include "def.h"
 #include "game.h"
 
 class Local : protected Game
@@ -10,10 +10,8 @@ class Local : protected Game
 
 	protected:
 		virtual void onEvent() override;
-		void onUpdate();
-		void onRender() const;
 
-		SDL_Window *window = NULL;
-		bool quit = false;
-		SDL_Event event;
+	private:
+		void check_keys();
+		void check_events();
 };

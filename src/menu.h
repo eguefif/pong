@@ -1,7 +1,7 @@
-#include <vector>
 #ifndef MENU_H
 # define MENU_H
 #define TITLE_DISTANCE 200
+#include "def.h"
 
 class Menu
 {
@@ -21,7 +21,6 @@ class Menu
 		void display_selector();
 		void move_selector_up();
 		void move_selector_down();
-		SDL_Surface *load_surface(std::string path);
 
 		SDL_Color color = {0, 0, 0};
 		SDL_Surface *sScreenSurface = NULL;
