@@ -35,6 +35,7 @@ private:
 	void handle_disconnection();
 	void render_end_of_game();
 	void check_event_endgame();
+	void switch_pause_remote();
 
 	std::string name = "";
 	Connexion conn;

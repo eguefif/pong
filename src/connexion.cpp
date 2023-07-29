@@ -115,9 +115,13 @@ void Connexion::update()
 		if (message->get_command() == "rackety")
 			racket = (atoi(message->get_content().c_str()));
 		if (message->get_command() == "pause")
+		{
 			set_flags(PAUSE);
+		}
 		if (message->get_command() == "unpause")
+		{
 			unset_flags(PAUSE);
+		}
 		if (message->get_command() == "EOG")
 		{
 			if (message->get_content() == "player")

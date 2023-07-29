@@ -25,7 +25,7 @@ void Remote::check_event()
 {
 	check_start();
 	check_sdl_events();
-	if (start)
+	if (start && !winner && !conn.check_flags(FINISHED))
 	{
 		check_keys();
 		update_connexion();
@@ -58,9 +58,7 @@ void Remote::check_sdl_events()
 				case SDLK_ESCAPE:	stop = true;
 									conn.send_end_of_game();
 								  break;
-				case SDLK_SPACE: //switch_pause();
-								 //conn.flip_flags(PAUSE);
-								 //conn.send_pause_status(pause);
+				case SDLK_SPACE: switch_pause_remote();
 								 break;
 			}
 		}
@@ -108,15 +106,19 @@ void Remote::update_connexion()
 void Remote::check_connexion_pause()
 {
 	if (conn.check_flags(PAUSE))
-		pause == true;
+	{
+		pause = true;
+	}
 	else
-		pause == false;
+	{
+		pause = false;
+	}
 }
 
 void Remote::check_connexion_game_over()
 {
 	if (conn.check_flags(GAMEOVER))
-		stop = true;
+		pause = true;
 }
 
 void Remote::sync_as_player1()
@@ -140,7 +142,7 @@ void Remote::sync_as_player2()
 
 void Remote::handle_disconnection()
 {
-	if (conn.check_flags(SERVER_DISCONNECT) || conn.check_flags(PLAYER_LEFT) || server_down)
+	if (!winner && (conn.check_flags(SERVER_DISCONNECT) || conn.check_flags(PLAYER_LEFT) || server_down))
 		render_end_of_game();
 }
 
@@ -156,7 +158,7 @@ void Remote::render_end_of_game()
 
 void Remote::check_event_endgame()
 {
-	while (SDL_PollEvent(&event) != 0)
+	while (SDL_PollEvent(&event))
 	{
 		if (event.type == SDL_QUIT)
 		{
@@ -176,10 +178,27 @@ void Remote::check_event_endgame()
 	}
 }
 
+void Remote::switch_pause_remote()
+{
+	switch_pause();
+	if (pause == true)
+	{
+		conn.set_flags(PAUSE);
+	}
+	else
+	{
+		conn.unset_flags(PAUSE);
+	}
+	conn.send_pause_status(pause);
+}
+
 void Remote::cleanup()
 {
-	Message eog("EOG", "");
-	conn.send_message(eog);
+	if (!conn.check_flags(FINISHED))
+	{
+		Message eog("EOG", "");
+		conn.send_message(eog);
+	}
 	conn.cleanup();
 	renderer.cleanup();
 }
