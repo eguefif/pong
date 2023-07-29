@@ -34,7 +34,7 @@ void Remote::check_event()
 
 void Remote::check_start()
 {
-	if (conn.waiting_to_start() && !start)
+	if (conn.is_start() && !start)
 	{
 		start = true;
 		pause = false;

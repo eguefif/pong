@@ -90,7 +90,7 @@ std::string Connexion::get_foe_name()
 	return (foe_name);
 }
 
-bool Connexion::waiting_to_start()
+bool Connexion::is_start()
 {
 	stream.read_message();
 	for (auto message = stream.messages.begin(); message != stream.messages.end(); ++ message)
@@ -236,12 +236,6 @@ void Connexion::update_score()
 void Connexion::send_end_of_game()
 {
 	Message message("EOG", "player");
-	stream.send_message(message);
-}
-
-void Connexion::send_pause()
-{
-	Message message("pause", "");
 	stream.send_message(message);
 }
 
