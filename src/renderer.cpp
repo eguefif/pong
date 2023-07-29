@@ -8,6 +8,13 @@ Renderer::Renderer()
 Renderer::Renderer(SDL_Window *awindow) :
 	window(awindow)
 {
+	init_renderer();
+	init_img();
+	init_font();
+}
+
+void Renderer::init_renderer()
+{
 	SDL_Renderer *aRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if (aRenderer == NULL)
 	{
@@ -16,8 +23,6 @@ Renderer::Renderer(SDL_Window *awindow) :
 	}
 	SDL_SetRenderDrawColor(aRenderer, 0x00, 0x00, 0x00, 0x00);
 	renderer = aRenderer;
-	init_img();
-	init_font();
 }
 
 void Renderer::init_font()
@@ -37,6 +42,8 @@ void Renderer::init_font()
 
 void Renderer::init_img()
 {
+	std::vector<std::string> images_path;
+
 	std::string zero = "./ressource/0.png";
 	std::string un = "./ressource/1.png";
 	std::string deux = "./ressource/2.png";
@@ -71,47 +78,6 @@ void Renderer::draw_interface(Racket racket1, Racket racket2) const
 	draw_scores(racket1, racket2);
 	draw_names(racket1, racket2);
 	draw_line();
-}
-
-void Renderer::draw_ball(Ball ball) const
-{
-	SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0x00);
-
-	for (float radius = (float) ball.get_radius(); radius >= 0; radius -= 0.1)
-		draw_circle(ball.get_location(), radius);
-}
-
-void Renderer::draw_circle(t_coord location, float radius) const
-{
-	int x,y;
-
-	for (float a = 0; a < 2 * 3.14; a += 0.01)
-	{
-		x = cos(a) * radius + location.x;
-		y = sin(a) * radius + location.y;
-		SDL_RenderDrawPoint(renderer, x, y);
-	}
-}
-
-void Renderer::draw_racket(Racket racket) const
-{
-	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, 0x00);
-	SDL_Rect racketrec = {racket.get_x(), racket.get_y(), RACKET_WIDTH, RACKET_HEIGHT};
-	SDL_RenderFillRect(renderer, &racketrec);
-}
-
-void Renderer::cleanup()
-{
-	SDL_DestroyRenderer(renderer);
-	renderer = NULL;
-	for (auto &surface : scores)
-	{
-		SDL_FreeSurface(surface);
-		surface = NULL;
-	}
-	scores.clear();
-	TTF_CloseFont(font);
-	TTF_Quit();
 }
 
 void Renderer::draw_scores(Racket racket1, Racket racket2) const
@@ -202,6 +168,41 @@ void Renderer::draw_right_name(std::string name) const
 	SDL_FreeSurface(text);
 }
 
+void Renderer::draw_line() const
+{
+	int x = 0;
+	SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0x00);
+	for (int x = 0; x <= SCREEN_WIDTH; x++)
+		SDL_RenderDrawPoint(renderer, x, TOP_EDGE);
+}
+
+void Renderer::draw_ball(Ball ball) const
+{
+	SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0x00);
+
+	for (float radius = (float) ball.get_radius(); radius >= 0; radius -= 0.1)
+		draw_circle(ball.get_location(), radius);
+}
+
+void Renderer::draw_circle(t_coord location, float radius) const
+{
+	int x,y;
+
+	for (float a = 0; a < 2 * 3.14; a += 0.01)
+	{
+		x = cos(a) * radius + location.x;
+		y = sin(a) * radius + location.y;
+		SDL_RenderDrawPoint(renderer, x, y);
+	}
+}
+
+void Renderer::draw_racket(Racket racket) const
+{
+	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, 0x00);
+	SDL_Rect racketrec = {racket.get_x(), racket.get_y(), RACKET_WIDTH, RACKET_HEIGHT};
+	SDL_RenderFillRect(renderer, &racketrec);
+}
+
 void Renderer::render_winner(std::string name) const
 {
 	SDL_Rect dst;
@@ -221,15 +222,6 @@ void Renderer::render_winner(std::string name) const
 	SDL_FreeSurface(text);
 }
 
-void Renderer::draw_line() const
-{
-	int x = 0;
-	SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0x00);
-	for (int x = 0; x <= SCREEN_WIDTH; x++)
-		SDL_RenderDrawPoint(renderer, x, TOP_EDGE);
-
-}
-
 void Renderer::render_text(std::string str, t_coord location)
 {
 	SDL_Rect dst;
@@ -245,13 +237,27 @@ void Renderer::render_text(std::string str, t_coord location)
 	SDL_FreeSurface(text);
 }
 
+void Renderer::render_now()
+{
+	SDL_RenderPresent(renderer);
+}
+
 void Renderer::clear_screen()
 {
 	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
 	SDL_RenderClear(renderer);
 }
 
-void Renderer::render_now()
+void Renderer::cleanup()
 {
-	SDL_RenderPresent(renderer);
+	SDL_DestroyRenderer(renderer);
+	renderer = NULL;
+	for (auto &surface : scores)
+	{
+		SDL_FreeSurface(surface);
+		surface = NULL;
+	}
+	scores.clear();
+	TTF_CloseFont(font);
+	TTF_Quit();
 }
