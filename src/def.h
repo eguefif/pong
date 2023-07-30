@@ -24,6 +24,7 @@ const int BALL_SPEED = 3;
 const float PI = 3.141592;
 const int PORT = 5000;
 const int MAX_SIZE = 99;
+const int WINNING_POINT_COUNT = 5;
 
 typedef struct s_coord
 {

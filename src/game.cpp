@@ -88,9 +88,9 @@ void Game::reset()
 
 void Game::set_winner_name()
 {
-	if (racket1.get_score() == 5)
+	if (racket1.get_score() == WINNING_POINT_COUNT)
 		winner_name = racket1.get_name();
-	else if (racket2.get_score() == 5)
+	else if (racket2.get_score() == WINNING_POINT_COUNT)
 		winner_name = racket2.get_name();
 }
 
