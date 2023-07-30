@@ -56,9 +56,15 @@ void Ball::check_collision(Racket racket1, Racket racket2)
 	else if (location.y - radius <= TOP_EDGE)
 		reverse_y_vec();
 	if (racket1.is_colliding(location))
+	{
 		reverse_x_vec();
+		set_location({0 + RACKET_WIDTH + (int) RADIUS / 2 + 15, location.y});
+	}
 	else if (racket2.is_colliding(location))
+	{
 		reverse_x_vec();
+		set_location({racket2.get_x() + (int) RADIUS / 2 - 15, location.y});
+	}
 }
 
 void Ball::reverse_x_vec()
@@ -73,6 +79,11 @@ void Ball::reverse_y_vec()
 
 void Ball::set_location(t_coord loc)
 {
+	location = loc;
+}
+
+void Ball::rand_direction()
+{
 	srand(time(NULL));
 	if (rand() % 2)
 		x_vec = BALL_SPEED;
@@ -82,7 +93,6 @@ void Ball::set_location(t_coord loc)
 		y_vec = BALL_SPEED;
 	else
 		y_vec = -BALL_SPEED;
-	location = loc;
 }
 
 int Ball::get_scorer()

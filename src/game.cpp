@@ -83,6 +83,7 @@ void Game::reset()
 {
 	t_coord loc = {SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2};
 	ball.set_location(loc);
+	ball.rand_direction();
 }
 
 void Game::set_winner_name()

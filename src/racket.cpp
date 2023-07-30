@@ -48,6 +48,13 @@ bool Racket::is_colliding(t_coord loc)
 	return (false);
 }
 
+bool Racket::is_at_racket_level(int y)
+{
+	if ((y + RADIUS / 2) > location.y && (y - RADIUS / 2) < location.y + RACKET_HEIGHT)
+		return (true);
+	return (false);
+}
+
 bool Racket::is_collision()
 {
 	if (y_vec > 0)
@@ -71,14 +78,6 @@ int Racket::get_x()
 int Racket::get_y()
 {
 	return (location.y);
-}
-
-
-bool Racket::is_at_racket_level(int y)
-{
-	if (y > location.y && y < location.y + RACKET_HEIGHT)
-		return (true);
-	return (false);
 }
 
 int Racket::get_side()

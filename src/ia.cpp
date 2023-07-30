@@ -6,7 +6,7 @@ int IA::where_to_go(Ball ball, Racket racket)
 
 	srand(time(NULL));
 	retval = rand() % 3;
-	if (ball.get_x() < SCREEN_WIDTH / 2)
+	if (ball.get_x() < SCREEN_WIDTH / 2 - 200)
 	{
 		if (ball.get_y() < (racket.get_y() + RACKET_HEIGHT / 2))
 		{

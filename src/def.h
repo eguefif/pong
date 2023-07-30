@@ -13,14 +13,14 @@
 #include <unistd.h>
 #include <queue>
 
-const int SCREEN_WIDTH = 1280;
+const int SCREEN_WIDTH = 1000;
 const int SCREEN_HEIGHT = 800;
 const int TOP_EDGE = 50;
 const int RACKET_HEIGHT = SCREEN_HEIGHT / 10;
-const int RACKET_WIDTH = 15;
+const int RACKET_WIDTH = 10;
 const int RACKET_SPEED = 3;
-const float RADIUS = 15;
-const int BALL_SPEED = 4;
+const float RADIUS = 10;
+const int BALL_SPEED = 3;
 const float PI = 3.141592;
 const int PORT = 5000;
 const int MAX_SIZE = 99;

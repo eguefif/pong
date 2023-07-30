@@ -19,6 +19,7 @@ class Ball
 		int get_vx();
 		void set_location(t_coord loc);
 		void set_direction(int n);
+		void rand_direction();
 
 	private:
 		t_coord location;
